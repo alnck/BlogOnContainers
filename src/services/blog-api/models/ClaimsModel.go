@@ -9,13 +9,12 @@ import (
 )
 
 type JwtClaims struct {
-	ComapnyId string `json:"comapnyId,omitempty"`
-	Username  string `json:"username,omitempty"`
-	Roles     []int  `json:"roles,omitempty"`
+	Username string `json:"username,omitempty"`
+	Roles    []int  `json:"roles,omitempty"`
 	jwt.StandardClaims
 }
 
-const ip = "192.168.0.107"
+const ip = "127.0.0.1"
 
 func (claims JwtClaims) Valid() error {
 	var now = time.Now().UTC().Unix()
