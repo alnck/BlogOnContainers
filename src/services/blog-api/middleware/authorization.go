@@ -33,7 +33,6 @@ func ValidateToken() gin.HandlerFunc {
 		if len(context.Keys) == 0 {
 			context.Keys = make(map[string]interface{})
 		}
-		context.Keys["ComapnyId"] = claims.ComapnyId
 		context.Keys["Username"] = claims.Username
 		context.Keys["Roles"] = claims.Roles
 
