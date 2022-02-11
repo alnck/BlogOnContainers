@@ -19,9 +19,6 @@ func main() {
 
 	product.Use(middleware.Authorization([]int{1}))
 
-	//product.GET("/", handler.GetAll)
-	//product.POST("/", middleware.Authorization([]int{4}), handler.AddProduct)
-
 	user := api.Group("/User")
 	user.GET("/", func(c *gin.Context) {
 		c.AbortWithStatusJSON(200, gin.H{
