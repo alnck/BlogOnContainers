@@ -9,22 +9,22 @@ import (
 )
 
 var (
-	repo *repository.MongoRepository
+	repoUsers *repository.MongoRepository
 )
 
-const m_COLLECTION_NAME = "users"
+const m_COLLECTION_NAME_USERS = "users"
 
 type UserService struct{}
 
 func NewUserService() UserService {
-	repo = repository.GetMongoRepository(m_COLLECTION_NAME)
+	repoUsers = repository.GetMongoRepository(m_COLLECTION_NAME_USERS)
 
 	return UserService{}
 }
 
 func (*UserService) IsValidUsernameAndPassword(loginObj models.LoginRequest) bool {
 	filter := bson.M{"username": loginObj.UserName, "password": loginObj.Password}
-	count, err := repo.CountDocuments(filter)
+	count, err := repoUsers.CountDocuments(filter)
 
 	return err == nil && count > 0
 }
@@ -32,7 +32,7 @@ func (*UserService) IsValidUsernameAndPassword(loginObj models.LoginRequest) boo
 func (*UserService) GetUserByUsername(username string) (User, error) {
 	var user User
 	filter := bson.M{"username": username}
-	err := repo.FindOne(filter, &user)
+	err := repoUsers.FindOne(filter, &user)
 
 	return user, err
 }

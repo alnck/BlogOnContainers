@@ -1,3 +1,3 @@
-package projectcontextkeys
+package ProjectContextKeys
 
 const USER_CONTEXT_KEY = "CurrentUser"

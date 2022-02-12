@@ -2,7 +2,7 @@ package handler
 
 import (
 	"blog-on-containers/models"
-	. "blog-on-containers/services"
+	"blog-on-containers/services"
 	"blog-on-containers/token"
 	"fmt"
 	"net/http"
@@ -23,7 +23,7 @@ func LoginHandler(context *gin.Context) {
 	}
 	// validate the loginObj for valid credential adn if these are valid then
 
-	userService := NewUserService()
+	userService := services.NewUserService()
 	if !userService.IsValidUsernameAndPassword(loginObj) {
 		badRequest(context, http.StatusBadRequest, "invalid user", nil)
 	}
