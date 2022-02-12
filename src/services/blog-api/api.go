@@ -12,18 +12,27 @@ func main() {
 	r.POST("/login", handler.LoginHandler)
 
 	api := r.Group("/api")
-
 	api.Use(middleware.ValidateToken())
 
-	product := api.Group("/product")
+	initBlogRouteMap(api)
+	initUserRouteMap(api)
 
-	product.Use(middleware.Authorization([]int{1}))
+	r.Run(":5000")
+}
 
-	user := api.Group("/User")
+func initBlogRouteMap(route *gin.RouterGroup) {
+	blog := route.Group("/blog")
+	blog.Use(middleware.Authorization([]int{1}))
+
+	blog.GET("/", handler.GetStroies)
+	blog.GET("/:id", handler.GetStory)
+}
+
+func initUserRouteMap(route *gin.RouterGroup) {
+	user := route.Group("/user")
 	user.GET("/", func(c *gin.Context) {
 		c.AbortWithStatusJSON(200, gin.H{
 			"status": "ok",
 		})
 	})
-	r.Run(":5000")
 }
