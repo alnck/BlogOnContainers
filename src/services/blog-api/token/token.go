@@ -10,7 +10,7 @@ import (
 
 const (
 	jWTPrivateToken = "SecrteTokenSecrteToken"
-	ip              = "192.168.0.107"
+	ip              = "127.0.0.1"
 )
 
 func GenrateToken(claims *models.JwtClaims, expirationTime time.Time) (string, error) {
