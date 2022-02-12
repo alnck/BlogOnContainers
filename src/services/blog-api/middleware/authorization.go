@@ -1,8 +1,11 @@
 package middleware
 
 import (
+	"blog-on-containers/constants/projectcontextkeys"
 	"blog-on-containers/models"
+	. "blog-on-containers/services"
 	"blog-on-containers/token"
+	"context"
 	"fmt"
 	"net/http"
 
@@ -36,7 +39,19 @@ func ValidateToken() gin.HandlerFunc {
 		context.Keys["Username"] = claims.Username
 		context.Keys["Roles"] = claims.Roles
 
+		addToContext(context, claims.Username)
 	}
+}
+
+func addToContext(c *gin.Context, username string) {
+	userService := NewUserService()
+	user, err := userService.GetUserByUsername(username)
+
+	if err != nil {
+		ReturnUnauthorized(c)
+	}
+
+	c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), projectcontextkeys.USER_CONTEXT_KEY, user))
 }
 
 func Authorization(validRoles []int) gin.HandlerFunc {

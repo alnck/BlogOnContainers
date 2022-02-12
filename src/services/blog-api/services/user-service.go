@@ -29,14 +29,10 @@ func (*UserService) IsValidUsernameAndPassword(loginObj models.LoginRequest) boo
 	return err == nil && count > 0
 }
 
-func getUserByUsernameAndPassword(loginObj models.LoginRequest) (User, error) {
+func (*UserService) GetUserByUsername(username string) (User, error) {
 	var user User
-	filter := bson.M{"username": loginObj.UserName, "password": loginObj.Password}
-	err := repo.FindOne(filter, user)
+	filter := bson.M{"username": username}
+	err := repo.FindOne(filter, &user)
 
 	return user, err
-}
-
-func (*UserService) GetUserByUsernameAndPassword(loginObj models.LoginRequest) (User, error) {
-	return getUserByUsernameAndPassword(loginObj)
 }
