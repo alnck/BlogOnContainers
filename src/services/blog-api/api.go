@@ -24,8 +24,9 @@ func initBlogRouteMap(route *gin.RouterGroup) {
 	blog := route.Group("/blog")
 	blog.Use(middleware.Authorization([]int{1}))
 
-	blog.GET("/", handler.GetStroies)
-	blog.GET("/:id", handler.GetStory)
+	blog.POST("/", handler.CreateStory)
+	blog.POST("/:id", handler.UpdateStory)
+
 }
 
 func initUserRouteMap(route *gin.RouterGroup) {

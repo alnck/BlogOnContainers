@@ -54,3 +54,15 @@ func (repo *MongoRepository) FindOne(selector map[string]interface{}, v interfac
 func (repo *MongoRepository) CountDocuments(selector map[string]interface{}) (int64, error) {
 	return repo.Collection.CountDocuments(context.Background(), selector)
 }
+
+func (repo *MongoRepository) InsertOne(v interface{}) (*mongo.InsertOneResult, error) {
+	return repo.Collection.InsertOne(context.Background(), v)
+}
+
+func (repo *MongoRepository) UpdateOne(filter, update map[string]interface{}) (*mongo.UpdateResult, error) {
+	return repo.Collection.UpdateOne(
+		context.Background(),
+		filter,
+		update,
+	)
+}
