@@ -66,3 +66,7 @@ func (repo *MongoRepository) UpdateOne(filter, update map[string]interface{}) (*
 		update,
 	)
 }
+
+func (repo *MongoRepository) DeleteOne(filter map[string]interface{}) (*mongo.DeleteResult, error) {
+	return repo.Collection.DeleteOne(context.Background(), filter)
+}

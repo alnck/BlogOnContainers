@@ -26,6 +26,7 @@ func initBlogRouteMap(route *gin.RouterGroup) {
 
 	blog.POST("/", handler.CreateStory)
 	blog.POST("/:id", handler.UpdateStory)
+	blog.DELETE("/:id", handler.DeleteStory)
 
 }
 

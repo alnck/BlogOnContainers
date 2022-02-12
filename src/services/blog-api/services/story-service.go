@@ -56,3 +56,21 @@ func (*StoryService) UpdateStory(story models.StoryRequest) bool {
 
 	return true
 }
+
+func (*StoryService) DeleteStory() bool {
+
+	storyId := storyContext.Param("id")
+	id, err := primitive.ObjectIDFromHex(storyId)
+	if err != nil {
+		return false
+	}
+
+	cu := helper.GetCurrentUser(storyContext)
+
+	filter := bson.M{"_id": id, "userid": cu.ID}
+
+	repoStories.DeleteOne(filter)
+
+	return true
+
+}
