@@ -63,9 +63,9 @@ func (*StoryService) UpdateStory(story models.StoryRequest) bool {
 		},
 	}
 
-	repoStories.UpdateOne(m_COLLECTION_NAME_STORIES, filter, update)
+	result, err := repoStories.UpdateOne(m_COLLECTION_NAME_STORIES, filter, update)
 
-	return true
+	return err == nil && result.ModifiedCount > 0
 }
 
 func (*StoryService) DeleteStory() bool {

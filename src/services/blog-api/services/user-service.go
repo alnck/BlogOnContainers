@@ -1,6 +1,7 @@
 package services
 
 import (
+	"blog-on-containers/entities"
 	. "blog-on-containers/entities"
 	"blog-on-containers/models"
 	"blog-on-containers/repository"
@@ -45,4 +46,11 @@ func (*UserService) GetUserByUsername(username string) (User, error) {
 	err := repoUsers.FindOne(m_COLLECTION_NAME_USERS, filter, &user)
 
 	return user, err
+}
+
+func (*UserService) CreateUser(loginObj models.LoginRequest) error {
+	user := entities.NewUser(loginObj.UserName, loginObj.Password)
+
+	repoUsers.InsertOne(m_COLLECTION_NAME_USERS, user)
+	return nil
 }

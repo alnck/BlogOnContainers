@@ -17,27 +17,26 @@ func main() {
 	authHandle := middleware.Authorization([]int{1})
 
 	initBlogRouteMap(api, validateTokenHandle, authHandle)
-	initUserRouteMap(api, validateTokenHandle, authHandle)
+	initUserRouteMap(api)
 
 	r.Run(":5000")
 }
 
 func initBlogRouteMap(route *gin.RouterGroup, validateTokenHandle, authHandle gin.HandlerFunc) {
 	blog := route.Group("/blog")
+	blog.Use(validateTokenHandle, authHandle)
 
-	blog.POST("/", handler.CreateStory, validateTokenHandle, authHandle)
-	blog.POST("/:id", handler.UpdateStory, validateTokenHandle, authHandle)
-	blog.DELETE("/:id", handler.DeleteStory, validateTokenHandle, authHandle)
+	blog.POST("/", handler.CreateStory)
+	blog.POST("/:id", handler.UpdateStory)
+	blog.DELETE("/:id", handler.DeleteStory)
 
-	blog.GET("/", handler.GetStories)
+	blogWithoutAuth := route.Group("/blog")
+
+	blogWithoutAuth.GET("/", handler.GetStories)
 }
 
-func initUserRouteMap(route *gin.RouterGroup, validateTokenHandle, authHandle gin.HandlerFunc) {
-	user := route.Group("/user", validateTokenHandle, authHandle)
+func initUserRouteMap(route *gin.RouterGroup) {
+	user := route.Group("/user")
 
-	user.GET("/", func(c *gin.Context) {
-		c.AbortWithStatusJSON(200, gin.H{
-			"status": "ok",
-		})
-	})
+	user.POST("/", handler.CreateUser)
 }

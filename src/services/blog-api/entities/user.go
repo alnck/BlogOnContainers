@@ -7,3 +7,12 @@ type User struct {
 	Username string             `bson:"username,omitempty"`
 	Password string             `bson:"password,omitempty"`
 }
+
+func NewUser(username, password string) User {
+	user := User{
+		Username: username,
+		Password: password,
+	}
+
+	return user
+}
