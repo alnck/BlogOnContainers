@@ -22,7 +22,7 @@ func initMongoDBInstance() {
 		lock.Lock()
 		defer lock.Unlock()
 		if mongoDBInstance == nil {
-			clientOptions := options.Client().ApplyURI("mongodb://localhost:27017") //mongodb://127.0.0.1:27017
+			clientOptions := options.Client().ApplyURI("mongodb://blogdb:27017") //mongodb://127.0.0.1:27017
 			client, err := mongo.Connect(context.TODO(), clientOptions)
 			if err != nil {
 				log.Fatal("⛒ Connection Failed to Database")

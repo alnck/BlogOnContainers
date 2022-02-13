@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+  blogapi:
+    build:
+      context: .
+      dockerfile: ./services/blog-api/Dockerfile
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+    depends_on: 
+      - blogdb
+   # networks:
+   #   - net_blogapi
+      
+  blogdb:
+    container_name: c-mongodb
+    image: mongo
+    restart: unless-stopped
+    volumes:
+      - blogdbvolume:/data/blogdb
+    ports: 
+      - 27017:27017
+   # networks:
+   #   - net_blogapi
+
+#networks:
+#  net_blogapi:
+#    driver: bridge
+#    external: true
+
+volumes:
+  blogdbvolume:
+    driver: local
