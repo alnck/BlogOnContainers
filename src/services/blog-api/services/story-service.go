@@ -33,9 +33,7 @@ func (*StoryService) CreateStory(story entities.Story) {
 }
 
 func (*StoryService) UpdateStory(story models.StoryRequest) bool {
-
 	storyId := storyContext.Param("id")
-
 	id, err := primitive.ObjectIDFromHex(storyId)
 	if err != nil {
 		return false
@@ -58,7 +56,6 @@ func (*StoryService) UpdateStory(story models.StoryRequest) bool {
 }
 
 func (*StoryService) DeleteStory() bool {
-
 	storyId := storyContext.Param("id")
 	id, err := primitive.ObjectIDFromHex(storyId)
 	if err != nil {
@@ -66,11 +63,19 @@ func (*StoryService) DeleteStory() bool {
 	}
 
 	cu := helper.GetCurrentUser(storyContext)
-
 	filter := bson.M{"_id": id, "userid": cu.ID}
 
 	repoStories.DeleteOne(filter)
 
 	return true
 
+}
+
+func (*StoryService) GetStories() ([]entities.Story, error) {
+	var stories []entities.Story
+	filter := bson.M{}
+
+	err := repoStories.Find(filter, &stories)
+
+	return stories, err
 }

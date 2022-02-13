@@ -47,6 +47,12 @@ func GetMongoRepository(collectionName string) *MongoRepository {
 	return &MongoRepository{Collection: mongoDBInstance.Collection(collectionName)}
 }
 
+func (repo *MongoRepository) Find(selector map[string]interface{}, v interface{}) error {
+	cursor, err := repo.Collection.Find(context.Background(), selector)
+	cursor.All(context.Background(), v)
+	return err
+}
+
 func (repo *MongoRepository) FindOne(selector map[string]interface{}, v interface{}) error {
 	return repo.Collection.FindOne(context.Background(), selector).Decode(v)
 }

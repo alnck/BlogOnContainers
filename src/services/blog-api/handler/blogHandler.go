@@ -23,7 +23,6 @@ func CreateStory(context *gin.Context) {
 	}
 
 	cu := helper.GetCurrentUser(context)
-
 	newStory := entities.NewStory(story.Title, story.Content, cu.ID)
 
 	storyService := services.NewStoryService(context)
@@ -44,15 +43,22 @@ func UpdateStory(context *gin.Context) {
 	}
 
 	storyService := services.NewStoryService(context)
-
 	storyService.UpdateStory(story)
 
 }
 
 func DeleteStory(context *gin.Context) {
-
 	storyService := services.NewStoryService(context)
-
 	storyService.DeleteStory()
 
+}
+
+func GetStories(context *gin.Context) {
+	storyService := services.NewStoryService(context)
+	stories, err := storyService.GetStories()
+	if err != nil {
+		badRequest(context, http.StatusBadRequest, "Stories Not Found", nil)
+	}
+
+	ok(context, http.StatusOK, "All Stories Taken", stories)
 }
