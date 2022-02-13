@@ -14,7 +14,7 @@ services:
    #   - net_blogapi
       
   blogdb:
-    container_name: c-mongodb
+    container_name: c_mongodb
     image: mongo
     restart: unless-stopped
     volumes:
