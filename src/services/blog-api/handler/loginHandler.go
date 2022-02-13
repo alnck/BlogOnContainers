@@ -20,8 +20,8 @@ func LoginHandler(context *gin.Context) {
 			ErrorMessage: fmt.Sprintf("%v", err),
 		})
 		badRequest(context, http.StatusBadRequest, "invalid request", errors)
+		return
 	}
-	// validate the loginObj for valid credential adn if these are valid then
 
 	userService := services.NewUserService()
 	genrateJWTToken(context, loginObj, userService)
@@ -50,6 +50,7 @@ func genrateJWTToken(context *gin.Context, loginObj models.LoginRequest, userSer
 				ErrorMessage: err.Error(),
 			},
 		})
+		return
 	}
 
 	ok(context, http.StatusOK, "token created", tokeString)

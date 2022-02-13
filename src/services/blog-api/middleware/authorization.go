@@ -32,6 +32,7 @@ func ValidateToken() gin.HandlerFunc {
 		valid, claims := token.VerifyToken(tokenString, referer)
 		if !valid {
 			ReturnUnauthorized(context)
+			return
 		}
 		if len(context.Keys) == 0 {
 			context.Keys = make(map[string]interface{})
@@ -59,12 +60,14 @@ func Authorization(validRoles []int) gin.HandlerFunc {
 
 		if len(context.Keys) == 0 {
 			ReturnUnauthorized(context)
+			return
 		}
 
 		rolesVal := context.Keys["Roles"]
 		fmt.Println("roles", rolesVal)
 		if rolesVal == nil {
 			ReturnUnauthorized(context)
+			return
 		}
 
 		roles := rolesVal.([]int)
@@ -76,6 +79,7 @@ func Authorization(validRoles []int) gin.HandlerFunc {
 		for _, val := range validRoles {
 			if _, ok := validation[val]; !ok {
 				ReturnUnauthorized(context)
+				return
 			}
 		}
 	}
