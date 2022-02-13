@@ -14,7 +14,7 @@ type IUserService interface {
 }
 
 var (
-	repoUsers *repository.MongoRepository
+	repoUsers repository.IMongoRepository
 )
 
 const m_COLLECTION_NAME_USERS = "users"
@@ -22,14 +22,19 @@ const m_COLLECTION_NAME_USERS = "users"
 type UserService struct{}
 
 func NewUserService() UserService {
-	repoUsers = repository.GetMongoRepository(m_COLLECTION_NAME_USERS)
+	repoUsers = repository.NewMongoRepository()
 
+	return UserService{}
+}
+
+func NewUserServiceForTest(mongoRepo repository.IMongoRepository) UserService {
+	repoUsers = mongoRepo
 	return UserService{}
 }
 
 func (*UserService) IsValidUsernameAndPassword(loginObj models.LoginRequest) bool {
 	filter := bson.M{"username": loginObj.UserName, "password": loginObj.Password}
-	count, err := repoUsers.CountDocuments(filter)
+	count, err := repoUsers.CountDocuments(m_COLLECTION_NAME_USERS, filter)
 
 	return err == nil && count > 0
 }
@@ -37,7 +42,7 @@ func (*UserService) IsValidUsernameAndPassword(loginObj models.LoginRequest) boo
 func (*UserService) GetUserByUsername(username string) (User, error) {
 	var user User
 	filter := bson.M{"username": username}
-	err := repoUsers.FindOne(filter, &user)
+	err := repoUsers.FindOne(m_COLLECTION_NAME_USERS, filter, &user)
 
 	return user, err
 }

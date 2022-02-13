@@ -9,20 +9,18 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type IMongoRepo interface {
-	Find(selector map[string]interface{}, v interface{}) error
-	FindOne(selector map[string]interface{}, v interface{}) error
-	CountDocuments(selector map[string]interface{}) (int64, error)
-	InsertOne(v interface{}) (*mongo.InsertOneResult, error)
-	UpdateOne(filter, update map[string]interface{}) (*mongo.UpdateResult, error)
-	DeleteOne(filter map[string]interface{}) (*mongo.DeleteResult, error)
+type IMongoRepository interface {
+	Find(collectionName string, selector map[string]interface{}, v interface{}) error
+	FindOne(collectionName string, selector map[string]interface{}, v interface{}) error
+	CountDocuments(collectionName string, selector map[string]interface{}) (int64, error)
+	InsertOne(collectionName string, v interface{}) (*mongo.InsertOneResult, error)
+	UpdateOne(collectionName string, filter, update map[string]interface{}) (*mongo.UpdateResult, error)
+	DeleteOne(collectionName string, filter map[string]interface{}) (*mongo.DeleteResult, error)
 }
 
 var lock sync.Mutex
 
-type MongoRepository struct {
-	Collection *mongo.Collection
-}
+type mongoRepository struct{}
 
 var mongoDBInstance *mongo.Database
 
@@ -50,38 +48,38 @@ func initMongoDBInstance() {
 	}
 }
 
-func GetMongoRepository(collectionName string) *MongoRepository {
+func NewMongoRepository() IMongoRepository {
 	initMongoDBInstance()
 
-	return &MongoRepository{Collection: mongoDBInstance.Collection(collectionName)}
+	return &mongoRepository{}
 }
 
-func (repo *MongoRepository) Find(selector map[string]interface{}, v interface{}) error {
-	cursor, err := repo.Collection.Find(context.Background(), selector)
+func (*mongoRepository) Find(collectionName string, selector map[string]interface{}, v interface{}) error {
+	cursor, err := mongoDBInstance.Collection(collectionName).Find(context.Background(), selector)
 	cursor.All(context.Background(), v)
 	return err
 }
 
-func (repo *MongoRepository) FindOne(selector map[string]interface{}, v interface{}) error {
-	return repo.Collection.FindOne(context.Background(), selector).Decode(v)
+func (*mongoRepository) FindOne(collectionName string, selector map[string]interface{}, v interface{}) error {
+	return mongoDBInstance.Collection(collectionName).FindOne(context.Background(), selector).Decode(v)
 }
 
-func (repo *MongoRepository) CountDocuments(selector map[string]interface{}) (int64, error) {
-	return repo.Collection.CountDocuments(context.Background(), selector)
+func (*mongoRepository) CountDocuments(collectionName string, selector map[string]interface{}) (int64, error) {
+	return mongoDBInstance.Collection(collectionName).CountDocuments(context.Background(), selector)
 }
 
-func (repo *MongoRepository) InsertOne(v interface{}) (*mongo.InsertOneResult, error) {
-	return repo.Collection.InsertOne(context.Background(), v)
+func (*mongoRepository) InsertOne(collectionName string, v interface{}) (*mongo.InsertOneResult, error) {
+	return mongoDBInstance.Collection(collectionName).InsertOne(context.Background(), v)
 }
 
-func (repo *MongoRepository) UpdateOne(filter, update map[string]interface{}) (*mongo.UpdateResult, error) {
-	return repo.Collection.UpdateOne(
+func (*mongoRepository) UpdateOne(collectionName string, filter, update map[string]interface{}) (*mongo.UpdateResult, error) {
+	return mongoDBInstance.Collection(collectionName).UpdateOne(
 		context.Background(),
 		filter,
 		update,
 	)
 }
 
-func (repo *MongoRepository) DeleteOne(filter map[string]interface{}) (*mongo.DeleteResult, error) {
-	return repo.Collection.DeleteOne(context.Background(), filter)
+func (*mongoRepository) DeleteOne(collectionName string, filter map[string]interface{}) (*mongo.DeleteResult, error) {
+	return mongoDBInstance.Collection(collectionName).DeleteOne(context.Background(), filter)
 }

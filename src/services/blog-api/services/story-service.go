@@ -20,7 +20,7 @@ type IStoryService interface {
 }
 
 var (
-	repoStories  *repository.MongoRepository
+	repoStories  repository.IMongoRepository
 	storyContext *gin.Context
 )
 
@@ -29,14 +29,14 @@ const m_COLLECTION_NAME_STORIES = "stories"
 type StoryService struct{}
 
 func NewStoryService(context *gin.Context) StoryService {
-	repoStories = repository.GetMongoRepository(m_COLLECTION_NAME_STORIES)
+	repoStories = repository.NewMongoRepository()
 	storyContext = context
 
 	return StoryService{}
 }
 
 func (*StoryService) CreateStory(story entities.Story) {
-	repoStories.InsertOne(story)
+	repoStories.InsertOne(m_COLLECTION_NAME_STORIES, story)
 }
 
 func (*StoryService) UpdateStory(story models.StoryRequest) bool {
@@ -57,7 +57,7 @@ func (*StoryService) UpdateStory(story models.StoryRequest) bool {
 		},
 	}
 
-	repoStories.UpdateOne(filter, update)
+	repoStories.UpdateOne(m_COLLECTION_NAME_STORIES, filter, update)
 
 	return true
 }
@@ -72,7 +72,7 @@ func (*StoryService) DeleteStory() bool {
 	cu := helper.GetCurrentUser(storyContext)
 	filter := bson.M{"_id": id, "userid": cu.ID}
 
-	repoStories.DeleteOne(filter)
+	repoStories.DeleteOne(m_COLLECTION_NAME_STORIES, filter)
 
 	return true
 
@@ -82,7 +82,7 @@ func (*StoryService) GetStories() ([]entities.Story, error) {
 	var stories []entities.Story
 	filter := bson.M{}
 
-	err := repoStories.Find(filter, &stories)
+	err := repoStories.Find(m_COLLECTION_NAME_STORIES, filter, &stories)
 
 	return stories, err
 }
