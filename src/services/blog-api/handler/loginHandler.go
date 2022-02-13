@@ -23,6 +23,11 @@ func LoginHandler(context *gin.Context) {
 		return
 	}
 
+	if err := loginObj.IsValid(); err != nil {
+		badRequest(context, http.StatusBadRequest, "invalid request", err)
+		return
+	}
+
 	userService := services.NewUserService()
 	genrateJWTToken(context, loginObj, userService)
 

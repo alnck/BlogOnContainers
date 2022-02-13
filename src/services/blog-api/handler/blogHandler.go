@@ -22,6 +22,11 @@ func CreateStory(context *gin.Context) {
 		badRequest(context, http.StatusBadRequest, "invalid request", errors)
 	}
 
+	if err := story.IsValid(); err != nil {
+		badRequest(context, http.StatusBadRequest, "invalid request", err)
+		return
+	}
+
 	cu := helper.GetCurrentUser(context)
 	newStory := entities.NewStory(story.Title, story.Content, cu.ID)
 
@@ -40,6 +45,11 @@ func UpdateStory(context *gin.Context) {
 			ErrorMessage: fmt.Sprintf("%v", err),
 		})
 		badRequest(context, http.StatusBadRequest, "invalid request", errors)
+	}
+
+	if err := story.IsValid(); err != nil {
+		badRequest(context, http.StatusBadRequest, "invalid request", err)
+		return
 	}
 
 	storyService := services.NewStoryService(context)
