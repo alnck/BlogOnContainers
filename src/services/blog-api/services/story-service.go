@@ -35,6 +35,12 @@ func NewStoryService(context *gin.Context) StoryService {
 	return StoryService{}
 }
 
+func NewStoryServiceForTest(mongoRepo repository.IMongoRepository, context *gin.Context) StoryService {
+	repoStories = mongoRepo
+	storyContext = context
+	return StoryService{}
+}
+
 func (*StoryService) CreateStory(story entities.Story) {
 	repoStories.InsertOne(m_COLLECTION_NAME_STORIES, story)
 }
@@ -78,11 +84,14 @@ func (*StoryService) DeleteStory() bool {
 
 }
 
-func (*StoryService) GetStories() ([]entities.Story, error) {
+func (*StoryService) GetStories() []entities.Story {
 	var stories []entities.Story
 	filter := bson.M{}
 
 	err := repoStories.Find(m_COLLECTION_NAME_STORIES, filter, &stories)
+	if err != nil {
+		return []entities.Story{}
+	}
 
-	return stories, err
+	return stories
 }

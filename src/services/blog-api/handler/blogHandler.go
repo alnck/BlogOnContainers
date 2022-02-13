@@ -55,10 +55,7 @@ func DeleteStory(context *gin.Context) {
 
 func GetStories(context *gin.Context) {
 	storyService := services.NewStoryService(context)
-	stories, err := storyService.GetStories()
-	if err != nil {
-		badRequest(context, http.StatusBadRequest, "Stories Not Found", nil)
-	}
+	stories := storyService.GetStories()
 
 	ok(context, http.StatusOK, "All Stories Taken", stories)
 }
