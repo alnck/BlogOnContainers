@@ -12,6 +12,13 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type IStoryService interface {
+	CreateStory(story entities.Story)
+	UpdateStory(story models.StoryRequest) bool
+	DeleteStory() bool
+	GetStories() ([]entities.Story, error)
+}
+
 var (
 	repoStories  *repository.MongoRepository
 	storyContext *gin.Context

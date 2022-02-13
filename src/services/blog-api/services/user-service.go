@@ -8,6 +8,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+type IUserService interface {
+	IsValidUsernameAndPassword(loginObj models.LoginRequest) bool
+	GetUserByUsername(username string) (User, error)
+}
+
 var (
 	repoUsers *repository.MongoRepository
 )
