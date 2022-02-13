@@ -24,28 +24,33 @@ func LoginHandler(context *gin.Context) {
 	// validate the loginObj for valid credential adn if these are valid then
 
 	userService := services.NewUserService()
-	if userService.IsValidUsernameAndPassword(loginObj) {
-		fmt.Println("Burdayım")
-		var claims = &models.JwtClaims{}
-		claims.Username = loginObj.UserName
-		claims.Roles = []int{1, 2, 3}
-		claims.Audience = context.Request.Header.Get("Referer") // get it from Referer header
+	genrateJWTToken(context, loginObj, userService)
 
-		var tokenCreationTime = time.Now().UTC()
-		var expirationTime = tokenCreationTime.Add(time.Duration(2) * time.Hour)
-		tokeString, err := token.GenrateToken(claims, expirationTime)
+}
 
-		if err != nil {
-			badRequest(context, http.StatusBadRequest, "error in gerating token", []models.ErrorDetail{
-				{
-					ErrorType:    models.ErrorTypeError,
-					ErrorMessage: err.Error(),
-				},
-			})
-		}
-
-		ok(context, http.StatusOK, "token created", tokeString)
+func genrateJWTToken(context *gin.Context, loginObj models.LoginRequest, userService services.UserService) {
+	if !userService.IsValidUsernameAndPassword(loginObj) {
+		badRequest(context, http.StatusBadRequest, "invalid user", nil)
+		return
 	}
 
-	badRequest(context, http.StatusBadRequest, "invalid user", nil)
+	var claims = &models.JwtClaims{}
+	claims.Username = loginObj.UserName
+	claims.Roles = []int{1, 2, 3}
+	claims.Audience = context.Request.Header.Get("Referer") // get it from Referer header
+
+	var tokenCreationTime = time.Now().UTC()
+	var expirationTime = tokenCreationTime.Add(time.Duration(2) * time.Hour)
+	tokeString, err := token.GenrateToken(claims, expirationTime)
+
+	if err != nil {
+		badRequest(context, http.StatusBadRequest, "error in gerating token", []models.ErrorDetail{
+			{
+				ErrorType:    models.ErrorTypeError,
+				ErrorMessage: err.Error(),
+			},
+		})
+	}
+
+	ok(context, http.StatusOK, "token created", tokeString)
 }
