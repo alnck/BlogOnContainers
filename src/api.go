@@ -3,12 +3,23 @@ package main
 import (
 	"blog-on-containers/handler"
 	"blog-on-containers/middleware"
+	"blog-on-containers/templates"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	r := gin.Default()
+
+	r = gin.New()
+	r.Use(gin.Logger())
+
+	r.LoadHTMLGlob("templates/views/*.html")
+	r.Static("/css", "./static/css")
+
+	r.GET("/loginpage", templates.LoginPage)
+	r.POST("/registerpage", templates.RegisterPage)
+
 	r.POST("/login", handler.LoginHandler)
 
 	api := r.Group("/api")

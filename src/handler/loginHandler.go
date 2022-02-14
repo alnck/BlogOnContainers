@@ -13,14 +13,26 @@ import (
 
 func LoginHandler(context *gin.Context) {
 	var loginObj models.LoginRequest
-	if err := context.ShouldBindJSON(&loginObj); err != nil {
-		var errors []models.ErrorDetail = make([]models.ErrorDetail, 0, 1)
-		errors = append(errors, models.ErrorDetail{
-			ErrorType:    models.ErrorTypeValidation,
-			ErrorMessage: fmt.Sprintf("%v", err),
-		})
-		badRequest(context, http.StatusBadRequest, "invalid request", errors)
-		return
+
+	context.MultipartForm()
+	for key, value := range context.Request.PostForm {
+		if key == "Username" {
+			loginObj.UserName = value[0]
+		} else if key == "password" {
+			loginObj.Password = value[0]
+		}
+	}
+
+	if loginObj.UserName == "" && loginObj.Password == "" {
+		if err := context.ShouldBindJSON(&loginObj); err != nil {
+			var errors []models.ErrorDetail = make([]models.ErrorDetail, 0, 1)
+			errors = append(errors, models.ErrorDetail{
+				ErrorType:    models.ErrorTypeValidation,
+				ErrorMessage: fmt.Sprintf("%v", err),
+			})
+			badRequest(context, http.StatusBadRequest, "invalid request", errors)
+			return
+		}
 	}
 
 	if err := loginObj.IsValid(); err != nil {

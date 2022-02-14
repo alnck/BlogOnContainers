@@ -17,7 +17,7 @@
             "request": "launch",
             "mode": "debug",
             "env": {"FLASH_PORT": 8080},
-            "program": "src/services/blog-api/api.go"
+            "program": "src/api.go"
         }
     ]
 }
