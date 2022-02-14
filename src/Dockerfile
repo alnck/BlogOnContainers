@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY . .
 
-WORKDIR ./services/blog-api
+#WORKDIR ./
 
 RUN go mod download
 

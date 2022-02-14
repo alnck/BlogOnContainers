@@ -4,7 +4,7 @@ services:
   blogapi:
     build:
       context: .
-      dockerfile: ./services/blog-api/Dockerfile
+      dockerfile: ./Dockerfile
     ports:
       - "5000:5000"
     restart: unless-stopped
