@@ -3,9 +3,7 @@ package main
 import (
 	"blog-on-containers/handler"
 	"blog-on-containers/middleware"
-	"blog-on-containers/models"
 	"blog-on-containers/templates"
-	"net/http"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -26,23 +24,28 @@ func main() {
 	r = gin.New()
 	r.Use(gin.Logger())
 
-	r.LoadHTMLGlob("templates/views/*.html")
-	r.Static("/css", "./static/css")
-
-	r.GET("/loginpage", templates.LoginPage)
-	r.POST("/registerpage", templates.RegisterPage)
-
 	r.POST("/login", handler.LoginHandler)
+	r.POST("/user", handler.CreateUser)
 
 	api := r.Group("/api")
 
 	validateTokenHandle := middleware.ValidateToken()
 	authHandle := middleware.Authorization([]int{1})
 
+	initTemplatesRouteMap(r)
 	initBlogRouteMap(api, validateTokenHandle, authHandle)
-	initUserRouteMap(api)
 
 	r.Run(":5000")
+}
+
+func initTemplatesRouteMap(route *gin.Engine) {
+	route.Use(gin.Logger())
+
+	route.LoadHTMLGlob("templates/views/*.html")
+	route.Static("/css", "./static/css")
+
+	route.GET("/loginpage", templates.LoginPage)
+	route.GET("/registerpage", templates.RegisterPage)
 }
 
 func initBlogRouteMap(route *gin.RouterGroup, validateTokenHandle, authHandle gin.HandlerFunc) {
@@ -56,18 +59,4 @@ func initBlogRouteMap(route *gin.RouterGroup, validateTokenHandle, authHandle gi
 	blogWithoutAuth := route.Group("/blog")
 
 	blogWithoutAuth.GET("/", handler.GetStories)
-}
-
-func initUserRouteMap(route *gin.RouterGroup) {
-	user := route.Group("/user")
-
-	user.GET("/", func(context *gin.Context) {
-		context.AbortWithStatusJSON(http.StatusOK, models.Response{
-			Data:    "ok",
-			Status:  http.StatusOK,
-			Message: "tes",
-		})
-	})
-
-	user.POST("/", handler.CreateUser)
 }
