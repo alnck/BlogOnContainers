@@ -2,9 +2,9 @@ package handler
 
 import (
 	"blog-on-containers/entities"
-	"blog-on-containers/helper"
 	"blog-on-containers/models"
 	"blog-on-containers/services"
+	"blog-on-containers/utils"
 	"fmt"
 	"net/http"
 
@@ -27,7 +27,7 @@ func CreateStory(context *gin.Context) {
 		return
 	}
 
-	cu := helper.GetCurrentUser(context)
+	cu := utils.GetCurrentUser(context)
 	newStory := entities.NewStory(story.Title, story.Content, cu.ID)
 
 	storyService := services.NewStoryService(context)

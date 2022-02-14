@@ -2,9 +2,9 @@ package services
 
 import (
 	"blog-on-containers/entities"
-	"blog-on-containers/helper"
 	"blog-on-containers/models"
 	"blog-on-containers/repository"
+	"blog-on-containers/utils"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -52,7 +52,7 @@ func (*StoryService) UpdateStory(story models.StoryRequest) bool {
 		return false
 	}
 
-	cu := helper.GetCurrentUser(storyContext)
+	cu := utils.GetCurrentUser(storyContext)
 
 	filter := bson.M{"_id": id, "userid": cu.ID}
 	update := bson.M{
@@ -75,7 +75,7 @@ func (*StoryService) DeleteStory() bool {
 		return false
 	}
 
-	cu := helper.GetCurrentUser(storyContext)
+	cu := utils.GetCurrentUser(storyContext)
 	filter := bson.M{"_id": id, "userid": cu.ID}
 
 	repoStories.DeleteOne(m_COLLECTION_NAME_STORIES, filter)
