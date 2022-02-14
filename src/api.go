@@ -59,4 +59,5 @@ func initBlogRouteMap(route *gin.RouterGroup, validateTokenHandle, authHandle gi
 	blogWithoutAuth := route.Group("/blog")
 
 	blogWithoutAuth.GET("/", handler.GetStories)
+	blogWithoutAuth.GET("/:id", handler.GetStory)
 }

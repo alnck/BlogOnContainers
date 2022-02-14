@@ -41,8 +41,9 @@ func NewStoryServiceForTest(mongoRepo repository.IMongoRepository, context *gin.
 	return StoryService{}
 }
 
-func (*StoryService) CreateStory(story entities.Story) {
-	repoStories.InsertOne(m_COLLECTION_NAME_STORIES, story)
+func (*StoryService) CreateStory(story entities.Story) bool {
+	_, err := repoStories.InsertOne(m_COLLECTION_NAME_STORIES, story)
+	return err != nil
 }
 
 func (*StoryService) UpdateStory(story models.StoryRequest) bool {
@@ -78,9 +79,9 @@ func (*StoryService) DeleteStory() bool {
 	cu := utils.GetCurrentUser(storyContext)
 	filter := bson.M{"_id": id, "userid": cu.ID}
 
-	repoStories.DeleteOne(m_COLLECTION_NAME_STORIES, filter)
+	_, err = repoStories.DeleteOne(m_COLLECTION_NAME_STORIES, filter)
 
-	return true
+	return err != nil
 
 }
 
@@ -94,4 +95,22 @@ func (*StoryService) GetStories() []entities.Story {
 	}
 
 	return stories
+}
+
+func (*StoryService) GetStory() (entities.Story, bool) {
+	var story entities.Story
+
+	storyId := storyContext.Param("id")
+	id, err := primitive.ObjectIDFromHex(storyId)
+	if err != nil {
+		return story, false
+	}
+
+	filter := bson.M{"_id": id}
+
+	if repoStories.Find(m_COLLECTION_NAME_STORIES, filter, &story) != nil {
+		return story, false
+	}
+
+	return story, true
 }
