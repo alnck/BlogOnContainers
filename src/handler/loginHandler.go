@@ -4,7 +4,6 @@ import (
 	"blog-on-containers/models"
 	"blog-on-containers/services"
 	"blog-on-containers/token"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -24,13 +23,7 @@ func LoginHandler(context *gin.Context) {
 	}
 
 	if loginObj.UserName == "" && loginObj.Password == "" {
-		if err := context.ShouldBindJSON(&loginObj); err != nil {
-			var errors []models.ErrorDetail = make([]models.ErrorDetail, 0, 1)
-			errors = append(errors, models.ErrorDetail{
-				ErrorType:    models.ErrorTypeValidation,
-				ErrorMessage: fmt.Sprintf("%v", err),
-			})
-			badRequest(context, http.StatusBadRequest, "invalid request", errors)
+		if !shouldBindJSON(context, &loginObj) {
 			return
 		}
 	}
@@ -42,7 +35,6 @@ func LoginHandler(context *gin.Context) {
 
 	userService := services.NewUserService()
 	genrateJWTToken(context, loginObj, userService)
-
 }
 
 func genrateJWTToken(context *gin.Context, loginObj models.LoginRequest, userService services.UserService) {
@@ -58,7 +50,7 @@ func genrateJWTToken(context *gin.Context, loginObj models.LoginRequest, userSer
 
 	var tokenCreationTime = time.Now().UTC()
 	var expirationTime = tokenCreationTime.Add(time.Duration(2) * time.Hour)
-	tokeString, err := token.GenrateToken(claims, expirationTime)
+	token, err := token.GenrateToken(claims, expirationTime)
 
 	if err != nil {
 		badRequest(context, http.StatusBadRequest, "error in gerating token", []models.ErrorDetail{
@@ -70,5 +62,7 @@ func genrateJWTToken(context *gin.Context, loginObj models.LoginRequest, userSer
 		return
 	}
 
-	ok(context, http.StatusOK, "token created", tokeString)
+	//utils.SetCookie(context, token)
+
+	ok(context, http.StatusOK, "token created", token)
 }

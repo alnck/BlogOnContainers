@@ -2,6 +2,7 @@ package handler
 
 import (
 	"blog-on-containers/models"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,4 +22,18 @@ func badRequest(context *gin.Context, status int, message string, errors []model
 		Message: message,
 	})
 
+}
+
+func shouldBindJSON(context *gin.Context, v interface{}) bool {
+	if err := context.ShouldBindJSON(&v); err != nil {
+		var errors []models.ErrorDetail = make([]models.ErrorDetail, 0, 1)
+		errors = append(errors, models.ErrorDetail{
+			ErrorType:    models.ErrorTypeValidation,
+			ErrorMessage: fmt.Sprintf("%v", err),
+		})
+		badRequest(context, http.StatusBadRequest, "invalid request", errors)
+		return false
+	}
+
+	return true
 }
