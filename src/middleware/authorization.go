@@ -28,6 +28,11 @@ func ReturnUnauthorized(context *gin.Context) {
 func ValidateToken() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		tokenString := context.Request.Header.Get("apikey")
+		/*tokenString := utils.GetCookieValue(context)
+		if tokenString == "" {
+			ReturnUnauthorized(context)
+			return
+		}*/
 		referer := context.Request.Header.Get("Referer")
 		valid, claims := token.VerifyToken(tokenString, referer)
 		if !valid {
