@@ -11,8 +11,19 @@ import (
 func CreateUser(context *gin.Context) {
 	var loginObj models.LoginRequest
 
-	if !shouldBindJSON(context, &loginObj) {
-		return
+	context.MultipartForm()
+	for key, value := range context.Request.PostForm {
+		if key == "Username" {
+			loginObj.UserName = value[0]
+		} else if key == "password" {
+			loginObj.Password = value[0]
+		}
+	}
+
+	if loginObj.UserName == "" && loginObj.Password == "" {
+		if !shouldBindJSON(context, &loginObj) {
+			return
+		}
 	}
 
 	if err := loginObj.IsValid(); err != nil {
