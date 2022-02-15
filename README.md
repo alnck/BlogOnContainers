@@ -14,7 +14,7 @@ Kullanıcıların blog gönderilerini görüntülemesine/yönetmesine olanak tan
 ---
 - Database olarak `mongoDB` kullanılmıştır.
 - Web Framework olarak  `Gin` kullanımıştır.
-- `JWT (JSON Web Tokens)` kullanılmıtır.
+- `JWT (JSON Web Tokens)` kullanılmıştır.
 
 ### Kullanım
 ---
