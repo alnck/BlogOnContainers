@@ -47,6 +47,7 @@ func initTemplatesRouteMap(route *gin.Engine) {
 
 	route.GET(LINK_TEMPLATE_LOGINPAGE_RELATIVEPATH, templates.LoginPage)
 	route.GET(LINK_TEMPLATE_REGISTERPAGE_RELATIVEPATH, templates.RegisterPage)
+	route.GET("/storypage/:id", templates.StoryPage)
 }
 
 func initBlogRouteMap(route *gin.RouterGroup, validateTokenHandle, authHandle gin.HandlerFunc) {

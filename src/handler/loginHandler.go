@@ -2,9 +2,11 @@ package handler
 
 import (
 	. "blog-on-containers/constants"
+	"blog-on-containers/entities"
 	"blog-on-containers/models"
 	"blog-on-containers/services"
 	"blog-on-containers/token"
+	"blog-on-containers/utils"
 	"net/http"
 	"time"
 
@@ -65,5 +67,26 @@ func genrateJWTToken(context *gin.Context, loginObj models.LoginRequest, userSer
 
 	//utils.SetCookie(context, token)
 
+	initSampleData(context)
+
 	ok(context, http.StatusOK, MESSAGE_TOKEN_GENERATION, token)
+}
+
+func initSampleData(context *gin.Context) {
+	userService := services.NewUserService()
+
+	hasData := userService.IsValidUsernameAndPassword(models.LoginRequest{UserName: "admin", Password: "admin"})
+	if hasData {
+		return
+	}
+
+	err := userService.CreateUser(models.LoginRequest{UserName: "admin", Password: "admin"})
+	if err != nil {
+		return
+	}
+
+	storyService := services.NewStoryService(context)
+
+	cu := utils.GetCurrentUser(context)
+	storyService.CreateStory(entities.NewStory("Golang - Fabrika Tasarım Deseni", "Desing Patternlar, yazılım sürecinde sıkça karşılaşılan sorunların ortak çözüm yoludur. Buradaki sorunlar, runtime sırasında alınan hatalar değildir. Peki nedir? Hiç kodunuzu incelediğinizde “burada bir şey eksik ama” dediğiniz oluyor mu? İşte tam orada devreye Design Patternlar giriyor. Aynı kodun çok defa tekrar etmesi, connect işlemlerinde kendini tekrar eden yapılar v.b. Bu gibi tasarımsal sorunların çözümü Design Patternlardır. Kısacası geçmişten günümüzü deneme yanılma yoluyla ortaya çıkan, ortak sorunların çözümü için oluşturulmuş kalıplardır.", cu.ID))
 }

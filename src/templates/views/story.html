@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+        <!-- Bootstrap CSS -->
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/blog.css" rel="stylesheet">
+      </head>
+      <body>
+        <main role="main" class="container text-center mt-5">
+            <div class="row">
+              <div class="col-md-12 blog-main">
+                <div class="blog-post">
+                  <h2 class="blog-post-title">{{ .Title }}</h2>
+                  <p class="blog-post-meta">{{.CreatedDate.Format "Jan 02, 2006 15:04 UTC" }} by <a href="#">{{ .Username }}</a></p>
+                  {{ .Content }}
+                </div><!-- /.blog-post -->
+          
+              </div><!-- /.blog-main -->
+    </body>
+</html>

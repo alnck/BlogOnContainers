@@ -3,7 +3,8 @@ package constants
 const (
 	SERVER_PORT = ":5000"
 
-	LINK_MONGODB_URI = "mongodb://localhost:27017"
+	LINK_MONGODB_URI        = "mongodb://localhost:27017"
+	LINK_MONGODB_DOCKER_URI = "mongodb://blogdb:27017"
 
 	LINK_RELATIVEPATH_CONSTANT = "/"
 

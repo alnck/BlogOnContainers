@@ -43,7 +43,7 @@ func NewStoryServiceForTest(mongoRepo repository.IMongoRepository, context *gin.
 
 func (*StoryService) CreateStory(story entities.Story) bool {
 	_, err := repoStories.InsertOne(m_COLLECTION_NAME_STORIES, story)
-	return err != nil
+	return err == nil
 }
 
 func (*StoryService) UpdateStory(story models.StoryRequest) bool {
@@ -81,7 +81,7 @@ func (*StoryService) DeleteStory() bool {
 
 	_, err = repoStories.DeleteOne(m_COLLECTION_NAME_STORIES, filter)
 
-	return err != nil
+	return err == nil
 
 }
 
@@ -108,8 +108,9 @@ func (*StoryService) GetStory() (entities.Story, bool) {
 
 	filter := bson.M{"_id": id}
 
-	if repoStories.Find(m_COLLECTION_NAME_STORIES, filter, &story) != nil {
-		return story, false
+	err = repoStories.FindOne(m_COLLECTION_NAME_STORIES, filter, &story)
+	if err != nil {
+		return entities.Story{}, false
 	}
 
 	return story, true
