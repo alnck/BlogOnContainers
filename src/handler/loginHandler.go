@@ -1,6 +1,7 @@
 package handler
 
 import (
+	. "blog-on-containers/constants"
 	"blog-on-containers/models"
 	"blog-on-containers/services"
 	"blog-on-containers/token"
@@ -29,7 +30,7 @@ func LoginHandler(context *gin.Context) {
 	}
 
 	if err := loginObj.IsValid(); err != nil {
-		badRequest(context, http.StatusBadRequest, "invalid request", err)
+		badRequest(context, http.StatusBadRequest, MESSAGE_INVALID_REQUEST, err)
 		return
 	}
 
@@ -39,7 +40,7 @@ func LoginHandler(context *gin.Context) {
 
 func genrateJWTToken(context *gin.Context, loginObj models.LoginRequest, userService services.UserService) {
 	if !userService.IsValidUsernameAndPassword(loginObj) {
-		badRequest(context, http.StatusBadRequest, "invalid user", nil)
+		badRequest(context, http.StatusBadRequest, MESSAGE_INVALID_USER, nil)
 		return
 	}
 
@@ -53,7 +54,7 @@ func genrateJWTToken(context *gin.Context, loginObj models.LoginRequest, userSer
 	token, err := token.GenrateToken(claims, expirationTime)
 
 	if err != nil {
-		badRequest(context, http.StatusBadRequest, "error in gerating token", []models.ErrorDetail{
+		badRequest(context, http.StatusBadRequest, MESSAGE_TOKEN_NOT_GENERATION, []models.ErrorDetail{
 			{
 				ErrorType:    models.ErrorTypeError,
 				ErrorMessage: err.Error(),
@@ -64,5 +65,5 @@ func genrateJWTToken(context *gin.Context, loginObj models.LoginRequest, userSer
 
 	//utils.SetCookie(context, token)
 
-	ok(context, http.StatusOK, "token created", token)
+	ok(context, http.StatusOK, MESSAGE_TOKEN_GENERATION, token)
 }

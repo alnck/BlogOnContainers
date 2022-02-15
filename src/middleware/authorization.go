@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	. "blog-on-containers/constants"
 	"blog-on-containers/constants/ProjectContextKeys"
 	"blog-on-containers/models"
 	. "blog-on-containers/services"
@@ -17,11 +18,11 @@ func ReturnUnauthorized(context *gin.Context) {
 		Error: []models.ErrorDetail{
 			{
 				ErrorType:    models.ErrorTypeUnauthorized,
-				ErrorMessage: "You are not authorized to access this path",
+				ErrorMessage: ERROR_MESSAGE_UNAUTHORIZED,
 			},
 		},
 		Status:  http.StatusUnauthorized,
-		Message: "Unauthorized access",
+		Message: MESSAGE_UNAUTHORIZED,
 	})
 }
 

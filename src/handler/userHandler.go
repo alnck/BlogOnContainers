@@ -1,6 +1,7 @@
 package handler
 
 import (
+	. "blog-on-containers/constants"
 	"blog-on-containers/models"
 	"blog-on-containers/services"
 	"net/http"
@@ -27,21 +28,21 @@ func CreateUser(context *gin.Context) {
 	}
 
 	if err := loginObj.IsValid(); err != nil {
-		badRequest(context, http.StatusBadRequest, "invalid request", err)
+		badRequest(context, http.StatusBadRequest, MESSAGE_INVALID_REQUEST, err)
 		return
 	}
 
 	userService := services.NewUserService()
 	_, err := userService.GetUserByUsername(loginObj.UserName)
 	if err == nil {
-		badRequest(context, http.StatusBadRequest, "Username already taken ", nil)
+		badRequest(context, http.StatusBadRequest, MESSAGE_USER_ALREADY_TAKEN, nil)
 		return
 	}
 
 	if userService.CreateUser(loginObj) != nil {
-		badRequest(context, http.StatusBadRequest, "User not created", nil)
+		badRequest(context, http.StatusBadRequest, MESSAGE_USER_NOT_CREATED, nil)
 		return
 	}
 
-	ok(context, http.StatusOK, "User created", nil)
+	ok(context, http.StatusOK, MESSAGE_USER_CREATE, nil)
 }

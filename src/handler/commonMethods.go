@@ -1,6 +1,7 @@
 package handler
 
 import (
+	. "blog-on-containers/constants"
 	"blog-on-containers/models"
 	"fmt"
 	"net/http"
@@ -31,7 +32,7 @@ func shouldBindJSON(context *gin.Context, v interface{}) bool {
 			ErrorType:    models.ErrorTypeValidation,
 			ErrorMessage: fmt.Sprintf("%v", err),
 		})
-		badRequest(context, http.StatusBadRequest, "invalid request", errors)
+		badRequest(context, http.StatusBadRequest, MESSAGE_INVALID_REQUEST, errors)
 		return false
 	}
 

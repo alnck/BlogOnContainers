@@ -1,6 +1,7 @@
 package main
 
 import (
+	. "blog-on-containers/constants"
 	"blog-on-containers/handler"
 	"blog-on-containers/middleware"
 	"blog-on-containers/templates"
@@ -24,10 +25,10 @@ func main() {
 	r = gin.New()
 	r.Use(gin.Logger())
 
-	r.POST("/login", handler.LoginHandler)
-	r.POST("/user", handler.CreateUser)
+	r.POST(LINK_LOGIN_RELATIVEPATH, handler.LoginHandler)
+	r.POST(LINK_USER_RELATIVEPATH, handler.CreateUser)
 
-	api := r.Group("/api")
+	api := r.Group(LINK_API_GROUP_RELATIVEPATH)
 
 	validateTokenHandle := middleware.ValidateToken()
 	authHandle := middleware.Authorization([]int{1})
@@ -35,7 +36,7 @@ func main() {
 	initTemplatesRouteMap(r)
 	initBlogRouteMap(api, validateTokenHandle, authHandle)
 
-	r.Run(":5000")
+	r.Run(SERVER_PORT)
 }
 
 func initTemplatesRouteMap(route *gin.Engine) {
@@ -44,20 +45,20 @@ func initTemplatesRouteMap(route *gin.Engine) {
 	route.LoadHTMLGlob("templates/views/*.html")
 	route.Static("/css", "./static/css")
 
-	route.GET("/loginpage", templates.LoginPage)
-	route.GET("/registerpage", templates.RegisterPage)
+	route.GET(LINK_TEMPLATE_LOGINPAGE_RELATIVEPATH, templates.LoginPage)
+	route.GET(LINK_TEMPLATE_REGISTERPAGE_RELATIVEPATH, templates.RegisterPage)
 }
 
 func initBlogRouteMap(route *gin.RouterGroup, validateTokenHandle, authHandle gin.HandlerFunc) {
-	blog := route.Group("/blog")
+	blog := route.Group(LINK_BLOG_GROUP_RELATIVEPATH)
 	blog.Use(validateTokenHandle, authHandle)
 
-	blog.POST("/", handler.CreateStory)
-	blog.POST("/:id", handler.UpdateStory)
-	blog.DELETE("/:id", handler.DeleteStory)
+	blog.POST(LINK_RELATIVEPATH_CONSTANT, handler.CreateStory)
+	blog.POST(LINK_API_BLOG_GROUP_ID_RELATIVEPATH, handler.UpdateStory)
+	blog.DELETE(LINK_API_BLOG_GROUP_ID_RELATIVEPATH, handler.DeleteStory)
 
-	blogWithoutAuth := route.Group("/blog")
+	blogWithoutAuth := route.Group(LINK_BLOG_GROUP_RELATIVEPATH)
 
-	blogWithoutAuth.GET("/", handler.GetStories)
-	blogWithoutAuth.GET("/:id", handler.GetStory)
+	blogWithoutAuth.GET(LINK_RELATIVEPATH_CONSTANT, handler.GetStories)
+	blogWithoutAuth.GET(LINK_API_BLOG_GROUP_ID_RELATIVEPATH, handler.GetStory)
 }

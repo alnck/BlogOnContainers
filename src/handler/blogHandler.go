@@ -1,6 +1,7 @@
 package handler
 
 import (
+	. "blog-on-containers/constants"
 	"blog-on-containers/entities"
 	"blog-on-containers/models"
 	"blog-on-containers/services"
@@ -18,7 +19,7 @@ func CreateStory(context *gin.Context) {
 	}
 
 	if err := story.IsValid(); err != nil {
-		badRequest(context, http.StatusBadRequest, "invalid request", err)
+		badRequest(context, http.StatusBadRequest, MESSAGE_INVALID_REQUEST, err)
 		return
 	}
 
@@ -27,11 +28,11 @@ func CreateStory(context *gin.Context) {
 
 	storyService := services.NewStoryService(context)
 	if !storyService.CreateStory(newStory) {
-		badRequest(context, http.StatusBadRequest, "story could not be created", nil)
+		badRequest(context, http.StatusBadRequest, MESSAGE_STORY_NOT_CREATE, nil)
 		return
 	}
 
-	ok(context, http.StatusCreated, "story Added", story)
+	ok(context, http.StatusCreated, MESSAGE_STORY_CREATE, story)
 }
 
 func UpdateStory(context *gin.Context) {
@@ -42,43 +43,43 @@ func UpdateStory(context *gin.Context) {
 	}
 
 	if err := story.IsValid(); err != nil {
-		badRequest(context, http.StatusBadRequest, "invalid request", err)
+		badRequest(context, http.StatusBadRequest, MESSAGE_INVALID_REQUEST, err)
 		return
 	}
 
 	storyService := services.NewStoryService(context)
 	if !storyService.UpdateStory(story) {
-		badRequest(context, http.StatusBadRequest, "story could not be updated", nil)
+		badRequest(context, http.StatusBadRequest, MESSAGE_STORY_NOT_UPDATE, nil)
 		return
 	}
 
-	ok(context, http.StatusCreated, "story uptaded", story)
+	ok(context, http.StatusCreated, MESSAGE_STORY_UPDATE, story)
 }
 
 func DeleteStory(context *gin.Context) {
 	storyService := services.NewStoryService(context)
 	if !storyService.DeleteStory() {
-		badRequest(context, http.StatusBadRequest, "story could not be deleted", nil)
+		badRequest(context, http.StatusBadRequest, MESSAGE_STORY_NOT_DELETE, nil)
 		return
 	}
 
-	ok(context, http.StatusOK, "Story deleted", nil)
+	ok(context, http.StatusOK, MESSAGE_STORY_DELETE, nil)
 }
 
 func GetStories(context *gin.Context) {
 	storyService := services.NewStoryService(context)
 	stories := storyService.GetStories()
 
-	ok(context, http.StatusOK, "All Stories Taken", stories)
+	ok(context, http.StatusOK, MESSAGE_STORIES_TAKEN, stories)
 }
 
 func GetStory(context *gin.Context) {
 	storyService := services.NewStoryService(context)
 	story, bool := storyService.GetStory()
 	if !bool {
-		badRequest(context, http.StatusBadRequest, "No story with matching id", nil)
+		badRequest(context, http.StatusBadRequest, MESSAGE_STORY_NOT_TAKEN, nil)
 		return
 	}
 
-	ok(context, http.StatusOK, "Story is Taken", story)
+	ok(context, http.StatusOK, MESSAGE_STORY_TAKEN, story)
 }

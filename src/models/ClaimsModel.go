@@ -1,6 +1,7 @@
 package models
 
 import (
+	. "blog-on-containers/constants"
 	"fmt"
 	"strings"
 	"time"
@@ -21,7 +22,7 @@ func (claims JwtClaims) Valid() error {
 	if claims.VerifyExpiresAt(now, true) && claims.VerifyIssuer(ip, true) {
 		return nil
 	}
-	return fmt.Errorf("Token is invalid")
+	return fmt.Errorf(MESSAGE_TOKEN_INVALID)
 }
 
 func (claims JwtClaims) VerifyAudience(origin string) bool {

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	. "blog-on-containers/constants"
 	"context"
 	"log"
 	"sync"
@@ -29,7 +30,7 @@ func initMongoDBInstance() {
 		lock.Lock()
 		defer lock.Unlock()
 		if mongoDBInstance == nil {
-			clientOptions := options.Client().ApplyURI("mongodb://localhost:27017") //mongodb://blogdb:27017
+			clientOptions := options.Client().ApplyURI(LINK_MONGODB_URI) //mongodb://blogdb:27017
 			client, err := mongo.Connect(context.TODO(), clientOptions)
 			if err != nil {
 				log.Fatal("⛒ Connection Failed to Database")
